@@ -9,30 +9,39 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "categorias")
-public class Categoria implements Serializable{
+@Table(name = "products")
+public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	private Double preco;
 	
-	@ManyToMany(mappedBy = "categorias")
-	List<Produto> products = new ArrayList<>();
+	@ManyToMany
+	@JoinTable(
+			name = "produto_categoria", 
+			joinColumns = @JoinColumn(name = "produto_id"), 
+			inverseJoinColumns = @JoinColumn(name = "categoria_id")
+			)
+	private List<Categoria> categorias = new ArrayList<>();
 	
-	public Categoria() {
+	public Produto() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Categoria(Integer id, String name) {
+	public Produto(Integer id, String nome, Double preco) {
 		super();
 		this.id = id;
-		this.nome = name;
+		this.nome = nome;
+		this.preco = preco;
 	}
 
 	public Integer getId() {
@@ -43,16 +52,24 @@ public class Categoria implements Serializable{
 		this.id = id;
 	}
 
-	public String getName() {
+	public String getNome() {
 		return nome;
 	}
 
-	public void setName(String name) {
-		this.nome = name;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public List<Produto> getProducts() {
-		return products;
+	public Double getPreco() {
+		return preco;
+	}
+
+	public void setPreco(Double preco) {
+		this.preco = preco;
+	}
+
+	public List<Categoria> getCategorias() {
+		return categorias;
 	}
 
 	@Override
@@ -68,7 +85,7 @@ public class Categoria implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Produto other = (Produto) obj;
 		return Objects.equals(id, other.id);
 	}
 }
